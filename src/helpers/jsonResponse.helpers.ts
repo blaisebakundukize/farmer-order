@@ -7,7 +7,7 @@ const successResponse = ({
   data,
 }: IJSONResponse) => {
   res.status(status).json({
-    data,
+    ...data,
   });
 };
 
