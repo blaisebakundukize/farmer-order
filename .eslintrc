@@ -20,6 +20,8 @@
   ],
   "rules": {
     "no-console": 1,
-    "prettier/prettier": 2
+    "prettier/prettier": 2,
+    "@typescript-eslint/naming-convention": 0,
+    "@typescript-eslint/no-explicit-any": 0
   }
 }
