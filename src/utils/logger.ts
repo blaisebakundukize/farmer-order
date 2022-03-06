@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 const log = logger({
   prettyPrint: true,
   base: {
-    pid: false
+    pid: false,
   },
   timestamp: () => `."time":"${dayjs().format()}"`,
 });

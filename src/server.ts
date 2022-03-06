@@ -8,5 +8,7 @@ import logger from './utils/logger';
 
   const server = http.createServer(app);
 
-  server.listen(port, () => logger.info(`App is running at http:localhost:${port}`))
+  server.listen(port, () =>
+    logger.info(`App is running at http:localhost:${port}`)
+  );
 })();
