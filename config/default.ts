@@ -8,6 +8,8 @@ const environment = {
   dbUri: process.env.DB_URI,
   apiPrefix: process.env.API_PREFIX || '/api/v1',
   saltWorkFactor: 10,
+  secretKey: process.env.SECRET_KEY || '',
+  accessTokenTimeToLive: '7d',
 };
 
 export default environment;

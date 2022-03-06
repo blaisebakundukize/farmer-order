@@ -1,10 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
-import logger from '../../utils/logger';
 import { CreateUserInput } from '../../schema/user.schema';
 import userService from '../../service/user.service';
-import { handleHttpError, HttpError } from '../../helpers/error.helpers';
+import { HttpError } from '../../helpers/error.helpers';
 import successResponse from '../../helpers/jsonResponse.helpers';
 import { STATUS_CODES } from '../../constants';
+import { signJwt } from '../../helpers/auth.helpers';
+import config from 'config';
 
 /**
  * Auth controller class handles authentication
@@ -33,6 +34,29 @@ export class AuthController {
         )
       );
     }
+  };
+
+  login = async (req: Request, res: Response, next: NextFunction) => {
+    // validate user password
+    const user = await userService.validatePassword(req.body);
+
+    if (!user) {
+      return next(
+        new HttpError(STATUS_CODES.UNAUTHORIZED, 'Invalid email or password')
+      );
+    }
+
+    // create access token
+    const accessToken = signJwt(
+      { userId: user._id, roles: user.roles },
+      { expiresIn: config.get<string>('accessTokenTimeToLive') }
+    );
+
+    return successResponse({
+      res,
+      status: STATUS_CODES.CREATED,
+      data: { user, token: accessToken },
+    });
   };
 }
 

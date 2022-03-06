@@ -23,6 +23,32 @@ export class UserService {
       throw new Error(e);
     }
   };
+
+  /**
+   * @param {object} - email and password of user
+   * @returns {boolean}
+   */
+  validatePassword = async ({
+    email,
+    password,
+  }: {
+    email: string;
+    password: string;
+  }) => {
+    const user = await UserModal.findOne({ email });
+
+    if (!user) {
+      return false;
+    }
+
+    const isValid = await user.comparePassword(password);
+
+    if (!isValid) {
+      return false;
+    }
+
+    return omit(user.toJSON(), 'password');
+  };
 }
 
 const userService = new UserService();

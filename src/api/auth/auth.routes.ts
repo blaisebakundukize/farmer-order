@@ -11,4 +11,6 @@ authRouter.post(
   authController.createUserHandler
 );
 
+authRouter.post('/login', authController.login);
+
 export { authRouter };
