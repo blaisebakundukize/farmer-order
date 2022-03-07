@@ -48,7 +48,7 @@ export class AuthController {
 
     // create access token
     const accessToken = signJwt(
-      { userId: user._id, roles: user.roles },
+      { userId: user._id },
       { expiresIn: config.get<string>('accessTokenTimeToLive') }
     );
 
