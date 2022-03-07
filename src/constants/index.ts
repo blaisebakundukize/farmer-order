@@ -15,3 +15,9 @@ export enum USER_ROLES {
   FARMER = 'farmer',
   ADMIN = 'admin',
 }
+
+export enum ORDER_STATUS {
+  PENDING = 'pending',
+  APPROVED = 'approved',
+  REJECTED = 'rejected',
+}
