@@ -1,4 +1,4 @@
-import { DocumentDefinition } from 'mongoose';
+import { DocumentDefinition, FilterQuery } from 'mongoose';
 import UserModal from '../models/user.model';
 import { IUser } from '../models/interfaces/user.interfaces';
 import { omit } from 'lodash';
@@ -22,6 +22,14 @@ export class UserService {
     } catch (e: any) {
       throw new Error(e);
     }
+  };
+
+  /**
+   * @param {FilterQuery<IUser>} query
+   * @returns {object} user
+   */
+  findUser = async (query: FilterQuery<IUser>) => {
+    return UserModal.findOne(query);
   };
 
   /**
