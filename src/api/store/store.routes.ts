@@ -14,4 +14,8 @@ storeRouter.post(
   storeController.createStoreHandler
 );
 
+storeRouter.get('/', storeController.getStoresHandler);
+
+storeRouter.get('/:id', storeController.getStoreByIdHandler);
+
 export { storeRouter };
