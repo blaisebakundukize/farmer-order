@@ -1,4 +1,4 @@
-import { DocumentDefinition } from 'mongoose';
+import { DocumentDefinition, FilterQuery } from 'mongoose';
 import StoreModal from '../models/store.model';
 import { IStore } from '../models/interfaces/store.interfaces';
 
@@ -19,6 +19,22 @@ export class StoreService {
     } catch (e: any) {
       throw new Error(e);
     }
+  };
+
+  findStoreById = async (query: FilterQuery<IStore>) => {
+    return StoreModal.findById(query).exec();
+  };
+
+  findStores = async ({
+    limit,
+    offset,
+    condition,
+  }: {
+    limit: number;
+    offset: number;
+    condition: object;
+  }) => {
+    return StoreModal.find(condition).limit(limit).skip(offset);
   };
 }
 

@@ -6,9 +6,7 @@ const successResponse = ({
   status = STATUS_CODES.OK,
   data,
 }: IJSONResponse) => {
-  res.status(status).json({
-    ...data,
-  });
+  res.status(status).json(data);
 };
 
 export default successResponse;
