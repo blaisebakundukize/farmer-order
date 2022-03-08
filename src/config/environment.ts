@@ -12,4 +12,8 @@ const environment = {
   accessTokenTimeToLive: '7d',
 };
 
+if (environment.env === 'test') {
+  environment.dbUri = process.env.TEST_DB_URI || '';
+}
+
 export default environment;

@@ -1,5 +1,5 @@
 import express, { Request, Response, NextFunction } from 'express';
-import config from 'config';
+import environment from './config/environment';
 import { v1Router } from './api/router';
 import { HttpError, handleHttpError } from './helpers/error.helpers';
 import { requireToken } from './middleware/auth.middleware';
@@ -8,7 +8,7 @@ const app = express();
 
 app.use(express.json());
 
-const apiPrefix = config.get<string>('apiPrefix');
+const apiPrefix = environment.apiPrefix;
 
 app.all(
   `${apiPrefix}/*`,

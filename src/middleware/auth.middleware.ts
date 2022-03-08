@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import config from 'config';
+import environment from '../config/environment';
 import { getTokenFromRequest, verifyJWT } from '../helpers/auth.helpers';
 import { STATUS_CODES, USER_ROLES } from '../constants';
 import userService from '../service/user.service';
@@ -7,7 +7,7 @@ import userService from '../service/user.service';
 export const requireToken =
   (isTokenInBody = false) =>
   async (req: Request, res: Response, next: NextFunction) => {
-    const apiPrefix = config.get<string>('apiPrefix');
+    const apiPrefix = environment.apiPrefix;
     const doNotRequireTokenUrls = new RegExp(`^((${apiPrefix}/auth.*))$`, 'i');
 
     if (doNotRequireTokenUrls.test(req.url)) {

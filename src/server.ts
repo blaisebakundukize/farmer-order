@@ -1,11 +1,11 @@
 import http from 'http';
 import { app } from './app';
-import config from 'config';
+import environment from './config/environment';
 import logger from './utils/logger';
 import connect from './utils/connect';
 
 (async () => {
-  const port = config.get<number>('port');
+  const port = environment.port;
 
   // Make a connection to db
   await connect();

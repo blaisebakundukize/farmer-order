@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import { IUser } from './interfaces/user.interfaces';
 import { USER_ROLES } from '../constants';
-import config from 'config';
+import environment from '../config/environment';
 import logger from '../utils/logger';
 
 const userSchema = new mongoose.Schema<IUser>(
@@ -43,7 +43,7 @@ userSchema.pre('save', async function (next) {
     return next();
   }
 
-  const salt = await bcrypt.genSalt(config.get<number>('saltWorkFactor'));
+  const salt = await bcrypt.genSalt(environment.saltWorkFactor);
 
   const hash = await bcrypt.hashSync(user.password, salt);
 
