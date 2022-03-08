@@ -21,3 +21,8 @@ export enum ORDER_STATUS {
   APPROVED = 'approved',
   REJECTED = 'rejected',
 }
+
+export enum STORE_TYPES {
+  FERTILIZER = 'fertilizer',
+  SEED = 'seed',
+}

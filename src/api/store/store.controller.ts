@@ -83,7 +83,11 @@ export class StoreController {
     next: NextFunction
   ) => {
     try {
-      const condition = {};
+      let condition = {};
+
+      if (req.query.type) {
+        condition = { $and: [{ type: req.query.type }] };
+      }
 
       const { limit, page, totalDocs, offset } = await getPagination(
         req,

@@ -2,10 +2,12 @@ import { Request, Response, NextFunction } from 'express';
 import { CreateOrderInput } from '../../schema/order.schema';
 import { HttpError } from '../../helpers/error.helpers';
 import successResponse from '../../helpers/jsonResponse.helpers';
-import { STATUS_CODES, USER_ROLES } from '../../constants';
+import { STATUS_CODES, STORE_TYPES, USER_ROLES } from '../../constants';
 import { getPagination } from '../../helpers';
 import orderService from '../../service/order.service';
 import OrderModel from '../../models/order.model';
+import storeService from '../../service/store.service';
+import { Types } from 'mongoose';
 
 /**
  * Order controller class handles orders
@@ -24,12 +26,34 @@ export class OrderController {
   ) => {
     try {
       const userId = req.currentUser?._id;
-      const { store, landSize } = req.body;
-      const order = await orderService.createOrder({
-        store,
+      const { store: storeId, landSize } = req.body;
+      const store = await storeService.findStoreById({ _id: storeId });
+
+      if (!store) {
+        return next(new HttpError(STATUS_CODES.NOT_FOUND, 'store not found'));
+      }
+
+      const newStore: {
+        store: Types.ObjectId;
+        landSize: number;
+        farmer: Types.ObjectId;
+        fertilizerQuantity?: number;
+        seedQuantity?: number;
+      } = {
+        store: storeId,
         landSize,
         farmer: userId,
-      });
+      };
+
+      if (store.type === STORE_TYPES.FERTILIZER) {
+        newStore.fertilizerQuantity = landSize * 3;
+      }
+
+      if (store.type === STORE_TYPES.SEED) {
+        newStore.seedQuantity = landSize;
+      }
+
+      const order = await orderService.createOrder(newStore);
       return successResponse({
         res,
         status: STATUS_CODES.CREATED,

@@ -31,13 +31,13 @@ const orderSchema = new Schema<IOrder>(
   }
 );
 
-orderSchema.pre('save', async function (next) {
-  const order = this as IOrder;
+// orderSchema.pre('save', async function (next) {
+//   const order = this as IOrder;
 
-  order.seedQuantity = order.landSize;
-  order.fertilizerQuantity = order.landSize * 3;
-  return next();
-});
+//   order.seedQuantity = order.landSize;
+//   order.fertilizerQuantity = order.landSize * 3;
+//   return next();
+// });
 
 const OrderModel = mongoose.model('Order', orderSchema);
 
