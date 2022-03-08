@@ -17,3 +17,17 @@ export type CreateStoreInput = {
     type: STORE_TYPES;
   };
 };
+
+export const updateStoreSchema = Joi.object<IStore>({
+  storeName: Joi.string().min(2),
+  quantity: Joi.number(),
+  type: Joi.string().valid(...Object.values(STORE_TYPES)),
+});
+
+export type UpdateStoreInput = {
+  body: {
+    storeName?: string;
+    quantity?: number;
+    type?: STORE_TYPES;
+  };
+};
