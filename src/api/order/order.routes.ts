@@ -14,4 +14,8 @@ orderRouter.post(
   orderController.createOrderHandler
 );
 
+orderRouter.get('/', orderController.getOrdersHandler);
+
+orderRouter.get('/:id', orderController.getOrderByIdHandler);
+
 export { orderRouter };
