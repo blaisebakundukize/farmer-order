@@ -36,6 +36,14 @@ export class StoreService {
   }) => {
     return StoreModal.find(condition).limit(limit).skip(offset);
   };
+
+  updateStore = async (_id: string, data: object) => {
+    return StoreModal.findByIdAndUpdate(
+      { _id },
+      { $set: { ...data } },
+      { new: true, runValidators: true }
+    );
+  };
 }
 
 const storeService = new StoreService();
