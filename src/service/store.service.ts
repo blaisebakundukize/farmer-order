@@ -44,6 +44,10 @@ export class StoreService {
       { new: true, runValidators: true }
     );
   };
+
+  deleteStore = async (query: FilterQuery<IStore>) => {
+    return StoreModal.findByIdAndDelete(query);
+  };
 }
 
 const storeService = new StoreService();

@@ -77,6 +77,35 @@ export class StoreController {
    * @param {NextFunction} next
    * @returns {Promise<Response>}
    */
+  checkStoreByIdHandler = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const storeId = req.params.id;
+      const store = await storeService.findStoreById({
+        _id: storeId,
+      });
+      if (!store) {
+        return res
+          .status(STATUS_CODES.NOT_FOUND)
+          .json({ message: 'Store not found' });
+      }
+      return next();
+    } catch (e: any) {
+      return res
+        .status(STATUS_CODES.NOT_FOUND)
+        .json({ message: 'Could not find store due to internal server error' });
+    }
+  };
+
+  /**
+   * @param {Request} req
+   * @param {Response} res
+   * @param {NextFunction} next
+   * @returns {Promise<Response>}
+   */
   getStoresHandler = async (
     req: Request,
     res: Response,
@@ -142,6 +171,38 @@ export class StoreController {
         new HttpError(
           STATUS_CODES.SERVER_ERROR,
           'Could not update store due to internal server error',
+          e
+        )
+      );
+    }
+  };
+
+  /**
+   * @param {Request} req
+   * @param {Response} res
+   * @param {NextFunction} next
+   * @returns {Promise<Response>}
+   */
+  deleteStoreHandler = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { id } = req.params;
+
+      const store = await storeService.deleteStore({ _id: id });
+
+      return successResponse({
+        res,
+        status: STATUS_CODES.NO_CONTENT,
+        data: store,
+      });
+    } catch (e: any) {
+      return next(
+        new HttpError(
+          STATUS_CODES.SERVER_ERROR,
+          'Could not delete store due to internal server error',
           e
         )
       );

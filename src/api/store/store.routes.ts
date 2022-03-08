@@ -28,4 +28,12 @@ storeRouter.patch(
   storeController.updateStoreHandler
 );
 
+storeRouter.delete(
+  '/:id',
+  requireRoles([USER_ROLES.ADMIN]),
+  storeController.deleteStoreHandler
+);
+
+storeRouter.param('id', storeController.checkStoreByIdHandler);
+
 export { storeRouter };
