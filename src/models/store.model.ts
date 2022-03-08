@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { STORE_TYPES } from '../constants';
 import { IStore } from './interfaces/store.interfaces';
 
 const storeSchema = new mongoose.Schema<IStore>(
@@ -6,10 +7,16 @@ const storeSchema = new mongoose.Schema<IStore>(
     storeName: {
       type: String,
       required: true,
+      unique: true,
     },
     quantity: {
       type: Number,
       default: 0,
+    },
+    type: {
+      type: String,
+      required: true,
+      enum: Object.values(STORE_TYPES),
     },
   },
   {
