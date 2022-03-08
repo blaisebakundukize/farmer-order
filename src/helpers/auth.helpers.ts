@@ -1,9 +1,9 @@
 import { Request } from 'express';
 import jwt from 'jsonwebtoken';
-import config from 'config';
+import environment from '../config/environment';
 import { IDecodeTokenType } from '../interfaces';
 
-const secretKey = config.get<string>('secretKey');
+const secretKey = environment.secretKey;
 export const signJwt = (
   object: object,
   options?: jwt.SignOptions | undefined

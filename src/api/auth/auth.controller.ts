@@ -5,7 +5,7 @@ import { HttpError } from '../../helpers/error.helpers';
 import successResponse from '../../helpers/jsonResponse.helpers';
 import { STATUS_CODES } from '../../constants';
 import { signJwt } from '../../helpers/auth.helpers';
-import config from 'config';
+import environment from '../../config/environment';
 
 /**
  * Auth controller class handles authentication
@@ -49,7 +49,7 @@ export class AuthController {
     // create access token
     const accessToken = signJwt(
       { userId: user._id },
-      { expiresIn: config.get<string>('accessTokenTimeToLive') }
+      { expiresIn: environment.accessTokenTimeToLive }
     );
 
     return successResponse({
