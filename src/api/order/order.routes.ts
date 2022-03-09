@@ -1,7 +1,10 @@
 import { Router } from 'express';
 import orderController from './order.controller';
 import validate from '../../middleware/validateResource.middleware';
-import { createOrderSchema } from '../../schema/order.schema';
+import {
+  createOrderSchema,
+  updateOrderSchema,
+} from '../../schema/order.schema';
 import { requireRoles } from '../../middleware/auth.middleware';
 import { USER_ROLES } from '../../constants';
 import { isOrderBelongToUser } from '../../middleware/order.middleware';
@@ -27,6 +30,12 @@ orderRouter.delete(
   '/:id',
   isOrderBelongToUser(false),
   orderController.deleteOrderHandler
+);
+
+orderRouter.patch(
+  '/:id',
+  validate(updateOrderSchema),
+  orderController.updateOrderHandler
 );
 
 orderRouter.param('id', orderController.checkOrderByIdHandler);
