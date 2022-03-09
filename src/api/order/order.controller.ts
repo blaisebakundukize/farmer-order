@@ -2,7 +2,12 @@ import { Request, Response, NextFunction } from 'express';
 import { CreateOrderInput } from '../../schema/order.schema';
 import { HttpError } from '../../helpers/error.helpers';
 import successResponse from '../../helpers/jsonResponse.helpers';
-import { STATUS_CODES, STORE_TYPES, USER_ROLES } from '../../constants';
+import {
+  ORDER_STATUS,
+  STATUS_CODES,
+  STORE_TYPES,
+  USER_ROLES,
+} from '../../constants';
 import { getPagination } from '../../helpers';
 import orderService from '../../service/order.service';
 import OrderModel from '../../models/order.model';
@@ -218,6 +223,83 @@ export class OrderController {
         new HttpError(
           STATUS_CODES.SERVER_ERROR,
           'Could not delete order due to internal server error',
+          e
+        )
+      );
+    }
+  };
+
+  /**
+   * @param {Request} req
+   * @param {Response} res
+   * @param {NextFunction} next
+   * @returns {Promise<Response>}
+   */
+  updateOrderHandler = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { id } = req.params;
+
+      const order = await orderService.findOrderById({ _id: id });
+      const store = await storeService.findStoreById({
+        _id: order?.store,
+      });
+
+      if (order?.status === ORDER_STATUS.APPROVED) {
+        return next(
+          new HttpError(STATUS_CODES.BAD_REQUEST, 'Already approved')
+        );
+      }
+
+      if (req.body.status === ORDER_STATUS.APPROVED) {
+        let isStoreEnough = false;
+
+        if (order?.seedQuantity) {
+          if (store?.quantity) {
+            isStoreEnough = store?.quantity >= order?.seedQuantity;
+          }
+        }
+
+        if (order?.fertilizerQuantity) {
+          if (store?.quantity) {
+            isStoreEnough = store?.quantity >= order?.fertilizerQuantity;
+          }
+        }
+
+        if (!isStoreEnough) {
+          return next(
+            new HttpError(STATUS_CODES.BAD_REQUEST, 'Not enough store')
+          );
+        }
+
+        if (order?.seedQuantity && store?.quantity) {
+          await storeService.updateStore(store?._id, {
+            quantity: store?.quantity - order?.seedQuantity,
+          });
+        }
+
+        if (order?.fertilizerQuantity && store?.quantity) {
+          await storeService.updateStore(store?._id, {
+            quantity: store?.quantity - order?.fertilizerQuantity,
+          });
+        }
+      }
+
+      const updateOrder = await orderService.updateOrder(id, req.body);
+
+      return successResponse({
+        res,
+        status: STATUS_CODES.OK,
+        data: updateOrder,
+      });
+    } catch (e: any) {
+      return next(
+        new HttpError(
+          STATUS_CODES.SERVER_ERROR,
+          'Could not update order due to internal server error',
           e
         )
       );

@@ -40,6 +40,14 @@ export class OrderService {
   deleteOrder = async (query: FilterQuery<IOrder>) => {
     return OrderModel.findByIdAndDelete(query);
   };
+
+  updateOrder = async (_id: string, data: object) => {
+    return OrderModel.findByIdAndUpdate(
+      { _id },
+      { $set: { ...data } },
+      { new: true, runValidators: true }
+    );
+  };
 }
 
 const orderService = new OrderService();
