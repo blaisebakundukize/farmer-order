@@ -83,7 +83,6 @@ export class OrderController {
   ) => {
     try {
       const orderId = req.params.id;
-      const user = req.currentUser;
       const order = await orderService.findOrderById({
         _id: orderId,
       });
@@ -96,18 +95,6 @@ export class OrderController {
         );
       }
 
-      // Only admin or owner of the order allowed to get it
-      if (
-        order.farmer?.toString() !== user?._id.toString() &&
-        !user?.roles?.includes(USER_ROLES.ADMIN)
-      ) {
-        return next(
-          new HttpError(
-            STATUS_CODES.FORBIDDEN,
-            "You are not allowed to get someone's order"
-          )
-        );
-      }
       return successResponse({ res, status: STATUS_CODES.OK, data: order });
     } catch (e: any) {
       return next(
@@ -117,6 +104,35 @@ export class OrderController {
           e
         )
       );
+    }
+  };
+
+  /**
+   * @param {Request} req
+   * @param {Response} res
+   * @param {NextFunction} next
+   * @returns {Promise<Response>}
+   */
+  checkOrderByIdHandler = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const orderId = req.params.id;
+      const order = await orderService.findOrderById({
+        _id: orderId,
+      });
+      if (!order) {
+        return res
+          .status(STATUS_CODES.NOT_FOUND)
+          .json({ message: 'Order not found' });
+      }
+      return next();
+    } catch (e: any) {
+      return res
+        .status(STATUS_CODES.SERVER_ERROR)
+        .json({ message: 'Could not find Order due to an error' });
     }
   };
 
@@ -170,6 +186,38 @@ export class OrderController {
         new HttpError(
           STATUS_CODES.SERVER_ERROR,
           'Could not get orders due to internal server error',
+          e
+        )
+      );
+    }
+  };
+
+  /**
+   * @param {Request} req
+   * @param {Response} res
+   * @param {NextFunction} next
+   * @returns {Promise<Response>}
+   */
+  deleteOrderHandler = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { id } = req.params;
+
+      const order = await orderService.deleteOrder({ _id: id });
+
+      return successResponse({
+        res,
+        status: STATUS_CODES.NO_CONTENT,
+        data: order,
+      });
+    } catch (e: any) {
+      return next(
+        new HttpError(
+          STATUS_CODES.SERVER_ERROR,
+          'Could not delete order due to internal server error',
           e
         )
       );

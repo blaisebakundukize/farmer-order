@@ -95,7 +95,7 @@ export class StoreController {
       return next();
     } catch (e: any) {
       return res
-        .status(STATUS_CODES.NOT_FOUND)
+        .status(STATUS_CODES.SERVER_ERROR)
         .json({ message: 'Could not find store due to internal server error' });
     }
   };
