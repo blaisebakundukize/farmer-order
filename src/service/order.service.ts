@@ -36,6 +36,10 @@ export class OrderService {
   }) => {
     return OrderModel.find(condition).limit(limit).skip(offset);
   };
+
+  deleteOrder = async (query: FilterQuery<IOrder>) => {
+    return OrderModel.findByIdAndDelete(query);
+  };
 }
 
 const orderService = new OrderService();
