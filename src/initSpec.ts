@@ -29,6 +29,6 @@ global.beforeAll(async () => {
   await clearDatabase();
 });
 
-global.afterEach(async () => {
+global.afterAll(async () => {
   await clearDatabase();
 });
